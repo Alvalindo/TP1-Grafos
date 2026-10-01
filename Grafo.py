@@ -146,3 +146,45 @@ class Grafo():
         for i in range(self.vertices):
             linha = [f"{self.matriz[i][j]:.1f}" for j in range(self.vertices)]
             print(" ".join(linha))
+
+    #Função de verificar quanto componentes conexo há no grafo
+    def componentes_conexas(self):
+
+        n = self.ordem()
+
+        # Copia a matriz de adjacência
+        matriz = [linha[:] for linha in self.matriz]
+
+        # Roy-Warshall: gera a matriz de alcançabilidade
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if matriz[i][k] != 0 and matriz[k][j] != 0:
+                        matriz[i][j] = 1
+
+        # Todo vértice é alcançável por ele mesmo
+        for i in range(n):
+            matriz[i][i] = 1
+
+        # Descobre os componentes
+        visitados = [False] * n
+        componentes = []
+
+        for i in range(n):
+
+            if not visitados[i]:
+
+                componente = []
+
+                for j in range(n):
+                    if matriz[i][j] != 0:
+                        componente.append(j + 1)
+                        visitados[j] = True
+
+                componentes.append(componente)
+
+        # Imprime o resultado
+        print("Número de componentes:", len(componentes))
+
+        for i, componente in enumerate(componentes, 1):
+            print(f"Componente {i}: {componente}")

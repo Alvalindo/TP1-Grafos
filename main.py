@@ -11,3 +11,4 @@ grafo.print_matriz()
 
 print(vizinhos_vertice)
 
+grafo.componentes_conexas()
