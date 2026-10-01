@@ -1,3 +1,5 @@
+from collections import deque
+
 class Grafo():
 
     #construtor da classe grafo
@@ -48,14 +50,45 @@ class Grafo():
         pass
 
     #a ser implementado
-    def busca_largura(vertice):
-        pass
+    def busca_largura(self, vertice):
+            visitados = [False] * self.vertices
+            
+            fila = deque([vertice])
+            visitados[vertice] = True
+            
+            sequencia_visitados = []
+            arestas_arvore = set()
+            todas_arestas = set()
+            
+            #mapeia todas as arestas unicas do grafo
+            for i in range(self.vertices):
+                for j in range(i, self.vertices):
+                    if self.matriz[i][j] != 0:
+                        todas_arestas.add((i, j))
+                        
+            while fila:
+                vertice_atual = fila.popleft()
+                sequencia_visitados.append(vertice_atual)
+                
+                for vizinho in range(self.vertices):
+                    if self.matriz[vertice_atual][vizinho] != 0:
+                        if not visitados[vizinho]:
+                            visitados[vizinho] = True
+                            fila.append(vizinho)
+                            
+                            aresta_arvore = (min(vertice_atual, vizinho), max(vertice_atual, vizinho))
+                            arestas_arvore.add(aresta_arvore)
+    
+            # descobrimos as arestas que nao fazem parte
+            arestas_retorno = todas_arestas - arestas_arvore
+            
+            return sequencia_visitados, list(arestas_retorno)
 
     #a ser implementado
     def componentes_conexas(self):
         pass
 
-    # verifica se o grafo possui ciclo usando busca em profundidade
+    #verifica se o grafo possui ciclo usando busca em profundidade
     def possui_ciclo(self):
         ordem = self.ordem()
         visitados = [False] * ordem
@@ -65,7 +98,7 @@ class Grafo():
                     return True
         return False
 
-    # funcao auxiliar de busca em profundidade para detectar ciclos
+    #funcao auxiliar de busca em profundidade para detectar ciclos
     def bp_ciclo(self, vertice_atual, visitados, vertice_pai):
         visitados[vertice_atual] = True
         lista_vizinhos = self.vizinhos(vertice_atual + 1)
@@ -75,7 +108,7 @@ class Grafo():
                 if self.bp_ciclo(vizinho_index, visitados, vertice_atual):
                     return True
             elif vizinho_index != vertice_pai:
-                return True # Encontrou ciclo
+                return True # encontrou ciclo
         return False
         
     #calcula o menor caminho de uma origem para todos os vertices usando dijkstra.
@@ -113,7 +146,7 @@ class Grafo():
                     rot[i - 1] = r 
         resultado = []
         for v in range(ordem):
-            # Guardando o par (pai, distancia) para cada vértice
+            #guardando o par (pai, distancia) para cada vertice
             if rot[v] != float('inf') and rot[v] != -1:
                 rot_usuario = rot[v] + 1
             else:
@@ -147,26 +180,26 @@ class Grafo():
             linha = [f"{self.matriz[i][j]:.1f}" for j in range(self.vertices)]
             print(" ".join(linha))
 
-    #Função de verificar quanto componentes conexo há no grafo
+    #funcao de verificar quanto componentes conexo ha no grafo
     def componentes_conexas(self):
 
         n = self.ordem()
 
-        # Copia a matriz de adjacência
+        #copia a matriz de adjacencia
         matriz = [linha[:] for linha in self.matriz]
 
-        # Roy-Warshall: gera a matriz de alcançabilidade
+        #roy-warshall: gera a matriz de alcancabilidade
         for k in range(n):
             for i in range(n):
                 for j in range(n):
                     if matriz[i][k] != 0 and matriz[k][j] != 0:
                         matriz[i][j] = 1
 
-        # Todo vértice é alcançável por ele mesmo
+        #todo vertice e alcancavel por ele mesmo
         for i in range(n):
             matriz[i][i] = 1
 
-        # Descobre os componentes
+        #descobre os componentes
         visitados = [False] * n
         componentes = []
 
@@ -183,7 +216,6 @@ class Grafo():
 
                 componentes.append(componente)
 
-        # Imprime o resultado
         print("Número de componentes:", len(componentes))
 
         for i, componente in enumerate(componentes, 1):

@@ -1,5 +1,5 @@
 from utils import leitura_arquivo
-from Grafo import Grafo
+from grafo import Grafo
 
 vertices, arestas, matriz_adjacencia = leitura_arquivo('grafoteste.txt')
 
