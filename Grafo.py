@@ -31,8 +31,11 @@ class Grafo():
         vizinhos = []
 
         for i in range(self.vertices):
-            if self.matriz[index][i] != 0:
-                vizinhos.append(i + 1)
+            if (self.matriz[index][i] != 0 and
+               self.matriz[i][index] != 0 and
+               self.matriz[i][index] == self.matriz[index][i]):
+                
+                vizinhos.append((i + 1, self.matriz[index][i]))
 
         return vizinhos
 

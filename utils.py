@@ -24,3 +24,5 @@ def leitura_arquivo(nome_arquivo):
             quantidade_arestas += 1
 
     return quantidade_vertices, quantidade_arestas, matriz
+
+
