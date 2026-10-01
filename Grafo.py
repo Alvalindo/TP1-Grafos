@@ -45,11 +45,38 @@ class Grafo():
     def grau_vertice(self, vertice):
         return len(self.vizinhos(vertice=vertice))
 
-    #a ser implementado
-    def vertice_eh_articulacao(self, vertice):
-        pass
+    #funcao utilitaria de busca em profundidade
+    def busca_em_profundidade(self, atual, visitado, removido=-1):
+            visitado[atual] = True
+    
+            for vizinho in range(self.vertices):
+                if (vizinho != removido
+                        and self.matriz[atual][vizinho] != 0
+                        and not visitado[vizinho]):
+    
+                    self.busca_em_profundidade(vizinho, visitado, removido)
+    
+    #funcao utilitaria que usa a busca em profudidade para contar os componentes
+    def contar_componentes(self, removido=-1):
+        n = self.vertices
+        visitado = [False] * n
+        componentes = 0
 
-    #a ser implementado
+        for v in range(n):
+            if v != removido and not visitado[v]:
+                componentes += 1
+                self.busca_em_profundidade(v, visitado, removido)
+
+        return componentes
+
+    #returna true para um vertice que é articulacao e false para um que não é
+    def vertice_eh_articulacao(self, vertice):
+        v1 = self.contar_componentes(vertice-1)
+        v2 = self.contar_componentes()
+
+        return True if v1 > v2 else False
+
+    #algoritmo de busca em largura, usando fila. retorna a sequencia de vertices visitados e as arestas de retorno
     def busca_largura(self, vertice):
             visitados = [False] * self.vertices
             
@@ -84,35 +111,74 @@ class Grafo():
             
             return sequencia_visitados, list(arestas_retorno)
 
-    #a ser implementado
+    #funcao de verificar quanto componentes conexo ha no grafo
     def componentes_conexas(self):
-        pass
+        n = self.ordem()
+
+        #copia a matriz de adjacencia
+        matriz = [linha[:] for linha in self.matriz]
+
+        #roy-warshall: gera a matriz de alcancabilidade
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if matriz[i][k] != 0 and matriz[k][j] != 0:
+                        matriz[i][j] = 1
+
+        #o vertice é alcancavel por ele mesmo
+        for i in range(n):
+            matriz[i][i] = 1
+
+        #descobre os componentes
+        visitados = [False] * n
+        componentes = []
+
+        for i in range(n):
+            if not visitados[i]:
+                componente = []
+                for j in range(n):
+                    if matriz[i][j] != 0:
+                        componente.append(j + 1)
+                        visitados[j] = True
+
+                componentes.append(componente)
+
+        print("Número de componentes:", len(componentes))
+
+        for i, componente in enumerate(componentes, 1):
+            print(f"Componente {i}: {componente}")
+
+    #funcao auxiliar de busca em profundidade adaptada para detectar ciclos
+    def bp_ciclo(self, vertice_atual, visitados, vertice_pai):
+        visitados[vertice_atual] = True
+
+        lista_vizinhos = self.vizinhos(vertice_atual + 1)
+
+        for vizinho, peso in lista_vizinhos:
+            vizinho_index = vizinho - 1
+
+            if visitados[vizinho_index] == False:
+                if self.bp_ciclo(vizinho_index, visitados, vertice_atual):
+                    return True
+                
+            elif vizinho_index != vertice_pai:
+                return True # encontrou ciclo
+            
+        return False
 
     #verifica se o grafo possui ciclo usando busca em profundidade
     def possui_ciclo(self):
         ordem = self.ordem()
         visitados = [False] * ordem
+
         for i in range(ordem):
             if(visitados[i] == False):
                 if self.bp_ciclo(i, visitados, -1):
                     return True
-        return False
-
-    #funcao auxiliar de busca em profundidade para detectar ciclos
-    def bp_ciclo(self, vertice_atual, visitados, vertice_pai):
-        visitados[vertice_atual] = True
-        lista_vizinhos = self.vizinhos(vertice_atual + 1)
-        for vizinho, peso in lista_vizinhos:
-            vizinho_index = vizinho - 1
-            if visitados[vizinho_index] == False:
-                if self.bp_ciclo(vizinho_index, visitados, vertice_atual):
-                    return True
-            elif vizinho_index != vertice_pai:
-                return True # encontrou ciclo
+                
         return False
         
-    #calcula o menor caminho de uma origem para todos os vertices usando dijkstra.
-    #devolve uma lista de tuplas no formato (vertice predecessor, distancia).
+    #calcula o menor caminho de uma origem para todos os vertices usando dijkstra. devolve uma lista de tuplas no formato (vertice predecessor, distancia).
     def caminhos_minimos(self, origem):
         origem_index = origem - 1
         ordem = self.ordem()
@@ -154,14 +220,15 @@ class Grafo():
             resultado.append((rot_usuario, dt[v]))
         return resultado
 
-    #pega a distancia exata e a rota entre dois vertices. 
-    #logica: usa o resultado do menor_caminho e reconstroi o trajeto de tras pra frente usando os predecessores.
+    #pega a distancia exata e a rota entre dois vertices. usa o resultado do menor_caminho e reconstroi o trajeto de tras pra frente usando os predecessores.
     def distancia_dois_vertices(self, origem, destino):
         resultado = self.caminhos_minimos(origem)
+
         destino_index = destino - 1
         predecessor, distancia = resultado[destino_index]
         caminho = []
         percorre = destino
+
         while percorre != origem:
             caminho.append(percorre)
             predecessor, _ = resultado[percorre - 1]
@@ -171,52 +238,5 @@ class Grafo():
             percorre = predecessor
         caminho.append(origem)
         caminho.reverse()
+
         return distancia, caminho
-
-
-    #funcao auxiliar para vizualizar a matriz de adjacencia
-    def print_matriz(self):
-        for i in range(self.vertices):
-            linha = [f"{self.matriz[i][j]:.1f}" for j in range(self.vertices)]
-            print(" ".join(linha))
-
-    #funcao de verificar quanto componentes conexo ha no grafo
-    def componentes_conexas(self):
-
-        n = self.ordem()
-
-        #copia a matriz de adjacencia
-        matriz = [linha[:] for linha in self.matriz]
-
-        #roy-warshall: gera a matriz de alcancabilidade
-        for k in range(n):
-            for i in range(n):
-                for j in range(n):
-                    if matriz[i][k] != 0 and matriz[k][j] != 0:
-                        matriz[i][j] = 1
-
-        #todo vertice e alcancavel por ele mesmo
-        for i in range(n):
-            matriz[i][i] = 1
-
-        #descobre os componentes
-        visitados = [False] * n
-        componentes = []
-
-        for i in range(n):
-
-            if not visitados[i]:
-
-                componente = []
-
-                for j in range(n):
-                    if matriz[i][j] != 0:
-                        componente.append(j + 1)
-                        visitados[j] = True
-
-                componentes.append(componente)
-
-        print("Número de componentes:", len(componentes))
-
-        for i, componente in enumerate(componentes, 1):
-            print(f"Componente {i}: {componente}")

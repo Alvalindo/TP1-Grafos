@@ -7,8 +7,6 @@ grafo = Grafo(vertices=vertices, arestas=arestas, matriz=matriz_adjacencia)
 
 vizinhos_vertice = grafo.vizinhos(1)
 
-grafo.print_matriz()
-
 print(vizinhos_vertice)
 
 grafo.componentes_conexas()
