@@ -78,6 +78,8 @@ class Grafo():
 
     #algoritmo de busca em largura, usando fila. retorna a sequencia de vertices visitados e as arestas de retorno
     def busca_largura(self, vertice):
+            vertice = vertice - 1
+
             visitados = [False] * self.vertices
             
             fila = deque([vertice])
@@ -179,8 +181,8 @@ class Grafo():
         return False
         
     #calcula o menor caminho de uma origem para todos os vertices usando dijkstra. devolve uma lista de tuplas no formato (vertice predecessor, distancia).
-    def caminhos_minimos(self, origem):
-        origem_index = origem - 1
+    def caminhos_minimos(self, vertice):
+        origem_index = vertice - 1
         ordem = self.ordem()
         dt = [float('inf')] * ordem
         rot = [-1] * ordem
@@ -218,6 +220,7 @@ class Grafo():
             else:
                 rot_usuario = float('inf')
             resultado.append((rot_usuario, dt[v]))
+            
         return resultado
 
     #pega a distancia exata e a rota entre dois vertices. usa o resultado do menor_caminho e reconstroi o trajeto de tras pra frente usando os predecessores.
