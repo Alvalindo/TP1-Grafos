@@ -78,9 +78,67 @@ class Grafo():
                 return True # Encontrou ciclo
         return False
         
-    #a ser implementado
-    def menor_caminho():
-        pass
+    #calcula o menor caminho de uma origem para todos os vertices usando dijkstra.
+    #devolve uma lista de tuplas no formato (vertice predecessor, distancia).
+    def caminhos_minimos(self, origem):
+        origem_index = origem - 1
+        ordem = self.ordem()
+        dt = [float('inf')] * ordem
+        rot = [-1] * ordem
+        rot[origem_index] = float('inf')
+        dt[origem_index] = 0
+        F = [False] * ordem
+        A = [True] * ordem
+        for _ in range(ordem):
+            menor_dt = float('inf')
+            r = -1
+            for v in range(ordem):
+                if (A[v] == True):
+                    if (dt[v] < menor_dt):
+                        menor_dt = dt[v]
+                        r = v
+            if r == -1:
+                break
+            F[r] = True
+            A[r] = False
+            V = []
+            lista_vizinhos = self.vizinhos(r + 1)
+            for i, peso in lista_vizinhos:
+                if (F[i - 1] == False):
+                    V.append((i, peso))   
+            for i, peso in V:
+                p = min(dt[i - 1], dt[r] + peso)
+                if (p < dt[i - 1]):
+                    dt[i - 1] = p
+                    rot[i - 1] = r 
+        resultado = []
+        for v in range(ordem):
+            # Guardando o par (pai, distancia) para cada vértice
+            if rot[v] != float('inf') and rot[v] != -1:
+                rot_usuario = rot[v] + 1
+            else:
+                rot_usuario = float('inf')
+            resultado.append((rot_usuario, dt[v]))
+        return resultado
+
+    #pega a distancia exata e a rota entre dois vertices. 
+    #logica: usa o resultado do menor_caminho e reconstroi o trajeto de tras pra frente usando os predecessores.
+    def distancia_dois_vertices(self, origem, destino):
+        resultado = self.caminhos_minimos(origem)
+        destino_index = destino - 1
+        predecessor, distancia = resultado[destino_index]
+        caminho = []
+        percorre = destino
+        while percorre != origem:
+            caminho.append(percorre)
+            predecessor, _ = resultado[percorre - 1]
+
+            if (predecessor == float('inf')):
+                return float('inf'), []
+            percorre = predecessor
+        caminho.append(origem)
+        caminho.reverse()
+        return distancia, caminho
 
 
     #funcao auxiliar para vizualizar a matriz de adjacencia
