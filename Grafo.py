@@ -55,10 +55,29 @@ class Grafo():
     def componentes_conexas(self):
         pass
 
-    #a ser implementado
+    # verifica se o grafo possui ciclo usando busca em profundidade
     def possui_ciclo(self):
-        pass
+        ordem = self.ordem()
+        visitados = [False] * ordem
+        for i in range(ordem):
+            if(visitados[i] == False):
+                if self.bp_ciclo(i, visitados, -1):
+                    return True
+        return False
 
+    # funcao auxiliar de busca em profundidade para detectar ciclos
+    def bp_ciclo(self, vertice_atual, visitados, vertice_pai):
+        visitados[vertice_atual] = True
+        lista_vizinhos = self.vizinhos(vertice_atual + 1)
+        for vizinho, peso in lista_vizinhos:
+            vizinho_index = vizinho - 1
+            if visitados[vizinho_index] == False:
+                if self.bp_ciclo(vizinho_index, visitados, vertice_atual):
+                    return True
+            elif vizinho_index != vertice_pai:
+                return True # Encontrou ciclo
+        return False
+        
     #a ser implementado
     def menor_caminho():
         pass
