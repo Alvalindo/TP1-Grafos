@@ -69,3 +69,47 @@ class Grafo():
         for i in range(self.vertices):
             linha = [f"{self.matriz[i][j]:.1f}" for j in range(self.vertices)]
             print(" ".join(linha))
+
+
+    def busca_em_profundidade(self, atual, visitado, removido=-1):
+        visitado[atual] = True
+
+        for vizinho in range(self.vertices):
+            if (vizinho != removido
+                    and self.matriz[atual][vizinho] != 0
+                    and not visitado[vizinho]):
+
+                self.busca_em_profundidade(vizinho, visitado, removido)
+
+
+    def contar_componentes(self, removido=-1):
+        n = self.vertices
+        visitado = [False] * n
+        componentes = 0
+
+        for v in range(n):
+            if v != removido and not visitado[v]:
+                componentes += 1
+                self.busca_em_profundidade(v, visitado, removido)
+
+        return componentes
+
+
+    def encontrar_articulacoes(self):
+        original = self.contar_componentes()
+        articulaçoes = []
+        count = 0
+
+        for v in range(self.vertices):
+            depois = self.contar_componentes(v)
+
+            if depois > original:
+                articulaçoes.append(v + 1)
+
+        if articulaçoes == []:
+            print("Não há vértices de articulação.")
+
+        else :
+            print("Vértices de articulação:")
+            print(articulaçoes)
+                
