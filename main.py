@@ -10,4 +10,4 @@ vizinhos_vertice = grafo.vizinhos(1)
 grafo.print_matriz()
 
 print(vizinhos_vertice)
-
+grafo.encontrar_articulacoes()
