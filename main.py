@@ -10,7 +10,7 @@ while True:
 
         printar_menu()
 
-    opcao_grafo = opcao_inicial = int(input('\nDigite a opção: '))
+    opcao_grafo = int(input('\nDigite a opção: '))
 
     match opcao_grafo:
         case 0:

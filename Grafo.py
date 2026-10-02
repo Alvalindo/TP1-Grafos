@@ -46,7 +46,7 @@ class Grafo():
         return len(self.vizinhos(vertice=vertice))
 
     #funcao utilitaria de busca em profundidade
-    def busca_em_profundidade(self, atual, visitado, removido=-1):
+    def __busca_em_profundidade(self, atual, visitado, removido=-1):
             visitado[atual] = True
     
             for vizinho in range(self.vertices):
@@ -54,10 +54,10 @@ class Grafo():
                         and self.matriz[atual][vizinho] != 0
                         and not visitado[vizinho]):
     
-                    self.busca_em_profundidade(vizinho, visitado, removido)
+                    self.__busca_em_profundidade(vizinho, visitado, removido)
     
     #funcao utilitaria que usa a busca em profudidade para contar os componentes
-    def contar_componentes(self, removido=-1):
+    def __contar_componentes(self, removido=-1):
         n = self.vertices
         visitado = [False] * n
         componentes = 0
@@ -65,14 +65,14 @@ class Grafo():
         for v in range(n):
             if v != removido and not visitado[v]:
                 componentes += 1
-                self.busca_em_profundidade(v, visitado, removido)
+                self.__busca_em_profundidade(v, visitado, removido)
 
         return componentes
 
     #returna true para um vertice que é articulacao e false para um que não é
     def vertice_eh_articulacao(self, vertice):
-        v1 = self.contar_componentes(vertice-1)
-        v2 = self.contar_componentes()
+        v1 = self.__contar_componentes(vertice-1)
+        v2 = self.__contar_componentes()
 
         return True if v1 > v2 else False
 
@@ -155,7 +155,7 @@ class Grafo():
             print(f"Componente {i}: {componente}")
 
     #funcao auxiliar de busca em profundidade adaptada para detectar ciclos
-    def bp_ciclo(self, vertice_atual, visitados, vertice_pai):
+    def __bp_ciclo(self, vertice_atual, visitados, vertice_pai):
         visitados[vertice_atual] = True
 
         lista_vizinhos = self.vizinhos(vertice_atual + 1)
@@ -164,7 +164,7 @@ class Grafo():
             vizinho_index = vizinho - 1
 
             if visitados[vizinho_index] == False:
-                if self.bp_ciclo(vizinho_index, visitados, vertice_atual):
+                if self.__bp_ciclo(vizinho_index, visitados, vertice_atual):
                     return True
                 
             elif vizinho_index != vertice_pai:
@@ -179,7 +179,7 @@ class Grafo():
 
         for i in range(ordem):
             if(visitados[i] == False):
-                if self.bp_ciclo(i, visitados, -1):
+                if self.__bp_ciclo(i, visitados, -1):
                     return True
                 
         return False
