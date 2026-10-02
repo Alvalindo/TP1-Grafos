@@ -37,7 +37,7 @@ class Grafo():
                self.matriz[i][index] != 0 and
                self.matriz[i][index] == self.matriz[index][i]):
                 
-                vizinhos.append((i + 1, self.matriz[index][i]))
+                vizinhos.append(i + 1)
 
         return vizinhos
 
@@ -110,6 +110,10 @@ class Grafo():
     
             # descobrimos as arestas que nao fazem parte
             arestas_retorno = todas_arestas - arestas_arvore
+
+            #convertendo para vertices com base 1
+            sequencia_visitados = [v + 1 for v in sequencia_visitados]
+            arestas_retorno = sorted((a + 1, b + 1) for a, b in arestas_retorno)
             
             return sequencia_visitados, list(arestas_retorno)
 
@@ -156,7 +160,7 @@ class Grafo():
 
         lista_vizinhos = self.vizinhos(vertice_atual + 1)
 
-        for vizinho, peso in lista_vizinhos:
+        for vizinho in lista_vizinhos:
             vizinho_index = vizinho - 1
 
             if visitados[vizinho_index] == False:
@@ -204,9 +208,9 @@ class Grafo():
             A[r] = False
             V = []
             lista_vizinhos = self.vizinhos(r + 1)
-            for i, peso in lista_vizinhos:
+            for i in lista_vizinhos:
                 if (F[i - 1] == False):
-                    V.append((i, peso))   
+                    V.append((i, self.matriz[r][i - 1]))   
             for i, peso in V:
                 p = min(dt[i - 1], dt[r] + peso)
                 if (p < dt[i - 1]):

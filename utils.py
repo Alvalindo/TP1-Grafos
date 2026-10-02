@@ -1,5 +1,7 @@
-#Função para fazer a leitura do grafo e traforma-lo em uma matriz de adjacência
+import sys
+from grafo import Grafo
 
+#Função para fazer a leitura do grafo e traforma-lo em uma matriz de adjacência
 def leitura_arquivo(nome_arquivo):
     try:
         with open(nome_arquivo, "r") as arquivo:
@@ -38,6 +40,50 @@ def leitura_arquivo(nome_arquivo):
     except FileNotFoundError:
         print('Erro: O arquivo não existe!')
         return False
+
+
+def carregar_grafo():
+    arquivo = input('Digite o nome do arquivo de teste (exemplo: grafo_1.txt): \n')
+    resultado = leitura_arquivo(arquivo)
+
+    if resultado:
+        vertices, arestas, matriz = resultado
+
+        grafo = Grafo(vertices=vertices, arestas=arestas, matriz=matriz)
+    
+        print('Grafo carregado com sucesso!')
+
+        return grafo
+
+    else:
+        sys.exit()
+
+
+def iniciar_programa(aux=0):
+    if aux == 0: #inicio do programa
+        print('\nANÁLISE DE REDE SOCIAL') 
+        print('========================================\n')
+
+        print('1 - Inserir arquivo de teste')
+        print('2 - Sair \n')
+
+        opcao_inicial = int(input('Digite a opção: \n'))
+
+        match opcao_inicial:
+            case 1:
+                grafo = carregar_grafo()
+
+                return grafo
+
+            case 2:
+                print('Saindo...')
+                sys.exit()
+
+    else: #usuario quer carregar outro grafo
+        grafo = carregar_grafo()
+
+        return grafo
+
 
 
 def validar_vertice(vertice, ordem, minimo=1):
