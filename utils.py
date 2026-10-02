@@ -1,8 +1,10 @@
 import sys
+import os
 from grafo import Grafo
 
 #Função para fazer a leitura do grafo e traforma-lo em uma matriz de adjacência
 def leitura_arquivo(nome_arquivo):
+    nome_arquivo = os.path.join('arquivos_teste', nome_arquivo)
     try:
         with open(nome_arquivo, "r") as arquivo:
 
