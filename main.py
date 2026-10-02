@@ -1,4 +1,4 @@
-from utils import validar_vertice, iniciar_programa
+from utils import validar_vertice, iniciar_programa, printar_menu
 
 grafo = iniciar_programa()
 
@@ -8,20 +8,7 @@ while True:
     if count_iteracoes == 0 or count_iteracoes > 4:
         count_iteracoes = 0
 
-        print('\n')
-
-        print('0 - Carregar outro grafo')
-        print('1 - Informar ordem do grafo')
-        print('2 - Informar tamanho do grafo')
-        print('3 - Calcular densidade')
-        print('4 - Informar vizinhos de um vértice')
-        print('5 - Informar grau de um vértice')
-        print('6 - Verificar se um vértice é articulação')
-        print('7 - Executar busca em largura')
-        print('8 - Identificar componentes conexas')
-        print('9 - Verificar existência de ciclos')
-        print('10 - Calcular caminhos mínimos')
-        print('11 - Sair\n')
+        printar_menu()
 
     opcao_grafo = opcao_inicial = int(input('\nDigite a opção: '))
 

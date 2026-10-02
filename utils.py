@@ -61,6 +61,23 @@ def carregar_grafo():
         sys.exit()
 
 
+def printar_menu():
+    print('\n')
+    
+    print('0 - Carregar outro grafo')
+    print('1 - Informar ordem do grafo')
+    print('2 - Informar tamanho do grafo')
+    print('3 - Calcular densidade')
+    print('4 - Informar vizinhos de um vértice')
+    print('5 - Informar grau de um vértice')
+    print('6 - Verificar se um vértice é articulação')
+    print('7 - Executar busca em largura')
+    print('8 - Identificar componentes conexas')
+    print('9 - Verificar existência de ciclos')
+    print('10 - Calcular caminhos mínimos')
+    print('11 - Sair\n')
+
+
 def iniciar_programa(aux=0):
     if aux == 0: #inicio do programa
         print('\nANÁLISE DE REDE SOCIAL') 
