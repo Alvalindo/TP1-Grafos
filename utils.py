@@ -75,7 +75,8 @@ def printar_menu():
     print('8 - Identificar componentes conexas')
     print('9 - Verificar existência de ciclos')
     print('10 - Calcular caminhos mínimos')
-    print('11 - Sair\n')
+    print('11 - Calcular distância e caminho entre dois vértices')
+    print('12 - Sair\n')
 
 
 def iniciar_programa(aux=0):
