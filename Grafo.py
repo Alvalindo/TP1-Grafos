@@ -78,44 +78,60 @@ class Grafo():
 
     #algoritmo de busca em largura, usando fila. retorna a sequencia de vertices visitados e as arestas de retorno
     def busca_largura(self, vertice):
-            vertice = vertice - 1
+        vertice = vertice - 1
 
-            visitados = [False] * self.vertices
-            
-            fila = deque([vertice])
-            visitados[vertice] = True
-            
-            sequencia_visitados = []
-            arestas_arvore = set()
-            todas_arestas = set()
-            
-            #mapeia todas as arestas unicas do grafo
-            for i in range(self.vertices):
-                for j in range(i, self.vertices):
-                    if self.matriz[i][j] != 0:
-                        todas_arestas.add((i, j))
-                        
+        visitados = [False] * self.vertices
+
+        sequencia_visitados = []
+        arestas_arvore = set()
+        todas_arestas = set()
+
+        # Mapeia todas as arestas únicas do grafo
+        for i in range(self.vertices):
+            for j in range(i, self.vertices):
+                if self.matriz[i][j] != 0:
+                    todas_arestas.add((i, j))
+
+        # O vértice informado é o primeiro ponto de partida.
+        # Os demais cobrem os outros componentes.
+        pontos_de_partida = [vertice] + [v for v in range(self.vertices) if v != vertice]
+
+        for inicio in pontos_de_partida:
+            if visitados[inicio]:
+                continue
+
+            visitados[inicio] = True
+            fila = deque([inicio])
+
             while fila:
                 vertice_atual = fila.popleft()
                 sequencia_visitados.append(vertice_atual)
-                
+
                 for vizinho in range(self.vertices):
                     if self.matriz[vertice_atual][vizinho] != 0:
                         if not visitados[vizinho]:
                             visitados[vizinho] = True
                             fila.append(vizinho)
-                            
-                            aresta_arvore = (min(vertice_atual, vizinho), max(vertice_atual, vizinho))
-                            arestas_arvore.add(aresta_arvore)
-    
-            # descobrimos as arestas que nao fazem parte
-            arestas_retorno = todas_arestas - arestas_arvore
 
-            #convertendo para vertices com base 1
-            sequencia_visitados = [v + 1 for v in sequencia_visitados]
-            arestas_retorno = sorted((a + 1, b + 1) for a, b in arestas_retorno)
-            
-            return sequencia_visitados, list(arestas_retorno)
+                            aresta_arvore = (
+                                min(vertice_atual, vizinho),
+                                max(vertice_atual, vizinho)
+                            )
+
+                            arestas_arvore.add(aresta_arvore)
+
+        # Descobrimos as arestas que não fazem parte da árvore
+        arestas_retorno = todas_arestas - arestas_arvore
+
+        # Convertendo para vértices com base 1
+        sequencia_visitados = [v + 1 for v in sequencia_visitados]
+
+        arestas_retorno = sorted(
+            (a + 1, b + 1)
+            for a, b in arestas_retorno
+        )
+
+        return sequencia_visitados, arestas_retorno
 
     #funcao de verificar quanto componentes conexo ha no grafo
     def componentes_conexas(self):
